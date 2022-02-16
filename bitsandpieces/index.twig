@@ -11,8 +11,8 @@
   <title>{% if meta.title %}{{ meta.title }} | {% endif %}{{ site_title }}</title>
   <link rel="stylesheet" href="{{ theme_url }}/styles/main.css" type="text/css" />
   <link rel="stylesheet" href="{{ theme_url }}/styles/highlightjs-github.css" type="text/css" />
-  {% for css_file in config.external_css %}
-    <link rel="stylesheet" href="{{ css_file }}" type="text/css" />
+  {% for css_file in config.theme_config.external_css %}
+    <link rel="stylesheet" href="{{ css_file | url }}" type="text/css" />
   {% endfor %}
 </head>
 <body>
@@ -20,15 +20,17 @@
 <aside class="main-nav">
 <nav>
   <ul>
-    {% for page in pages if page.title %}
-      <li class="menuitem {% if page.id == current_page.id %}active{% endif %}">
-        <a href="{{ page.url }}" data-shortcut="{{page.meta.shortcut}}">
-          {{ page.title }}
-          {% if page.meta.shortcut %}
-            <span class="shortcut">{{page.meta.shortcut|replace({'+':' '})}}</a>
-          {% endif %}
-        </a>
-      </li>
+    {% for page in pages %}
+      {% if not page.hidden %}
+        <li class="menuitem {% if page.id == current_page.id %}active{% endif %}">
+          <a href="{{ page.url }}" data-shortcut="{{ page.meta.shortcut }}">
+            {{ page.title ?: page.id }}
+            {% if page.meta.shortcut %}
+              <span class="shortcut">{{ page.meta.shortcut|replace({'+':' '}) }}</a>
+            {% endif %}
+          </a>
+        </li>
+      {% endif %}
     {% endfor %}
   </ul>
 </nav>
